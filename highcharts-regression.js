@@ -20,6 +20,12 @@
     }
 }(function (H) {
     var processSerie = function (s, method, chart) {
+
+        //Regression is not required if data contains only one entry #41
+        if(s.data.length <= 1){
+            return;
+        }
+        
         if (s.regression && !s.rendered) {
             s.regressionSettings = s.regressionSettings || {};
             s.regressionSettings.tooltip = s.regressionSettings.tooltip || {};
