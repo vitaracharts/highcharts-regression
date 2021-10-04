@@ -131,25 +131,33 @@
     }
 
     H.wrap(H.Chart.prototype, 'init', function (proceed) {
+
+        //#78
+        if(!arguments[1]){
+            return;
+        }
         var series = arguments[1].series;
         var extraSeries = [];
-        var i = 0;
         if (series) {
-            for (i = 0; i < series.length; i++) {
-                var s = series[i];
-                if (s.regression) {
-                    var extraSerie = processSerie(s, 'init', this);
-                    extraSeries.push(extraSerie);
+            for (var i = 0; i < series.length; i++) {
+
+                if(series[i] && series[i].regression){
+                    var extraSerie = processSerie(series[i], 'init', this);
                     arguments[1].series[i].rendered = true;
+                }
+
+                if (extraSerie) {
+                    extraSeries.push(extraSerie);
                 }
             }
         }
 
-        if (extraSerie) {
+        if (series && extraSeries.length > 0) {
             arguments[1].series = series.concat(extraSeries);
         }
 
         proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+
 
 
     });
