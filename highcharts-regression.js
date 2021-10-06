@@ -20,6 +20,12 @@
     }
 }(function (H) {
     var processSerie = function (s, method, chart) {
+
+        //Regression is not required if data contains only one entry #41
+        if(s.data.length <= 1){
+            return;
+        }
+        
         if (s.regression && !s.rendered) {
             s.regressionSettings = s.regressionSettings || {};
             s.regressionSettings.tooltip = s.regressionSettings.tooltip || {};
@@ -125,25 +131,33 @@
     }
 
     H.wrap(H.Chart.prototype, 'init', function (proceed) {
+
+        //#78
+        if(!arguments[1]){
+            return;
+        }
         var series = arguments[1].series;
         var extraSeries = [];
-        var i = 0;
         if (series) {
-            for (i = 0; i < series.length; i++) {
-                var s = series[i];
-                if (s.regression) {
-                    var extraSerie = processSerie(s, 'init', this);
-                    extraSeries.push(extraSerie);
+            for (var i = 0; i < series.length; i++) {
+
+                if(series[i] && series[i].regression){
+                    var extraSerie = processSerie(series[i], 'init', this);
                     arguments[1].series[i].rendered = true;
+                }
+
+                if (extraSerie) {
+                    extraSeries.push(extraSerie);
                 }
             }
         }
 
-        if (extraSerie) {
+        if (series && extraSeries.length > 0) {
             arguments[1].series = series.concat(extraSeries);
         }
 
         proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+
 
 
     });
@@ -174,8 +188,9 @@
                 sum[0] += data[n][0]; // X
                 sum[1] += data[n][1]; // Y
                 sum[2] += data[n][0] * data[n][0] * data[n][1]; // XXY
-                sum[3] += data[n][1] * Math.log(data[n][1]); // Y Log Y
-                sum[4] += data[n][0] * data[n][1] * Math.log(data[n][1]); //YY Log Y
+                //Temporary Solution for #13. If 0 or negative, add 0
+                sum[3] += data[n][1] <= 0 ? 0 : data[n][1] * Math.log(data[n][1]); // Y Log Y
+                sum[4] += data[n][1] <= 0 ? 0 : data[n][0] * data[n][1] * Math.log(data[n][1]); //YY Log Y
                 sum[5] += data[n][0] * data[n][1]; //XY
             }
         }
@@ -410,7 +425,7 @@
             var c = [];
             for (var j = 0; j < k; j++) {
                 for (var l = 0, len = data.length; l < len; l++) {
-                    if (data[l][1]) {
+                    if (data[l][1] || data[l][1] === 0) {
                         b += Math.pow(data[l][0], i + j);
                     }
                 }

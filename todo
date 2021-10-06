@@ -1,0 +1,19 @@
+Issues
+
+#13 ( https://github.com/highcharts/highcharts/issues/4111#issuecomment-95864230 ) (patched)    
+#21 (already resolved)
+#22 (already resolved)
+#26 (set decimalPlaces in regressionSettings)
+#41 (resolved)
+#49 (math related)
+#51 (resolved https://jsfiddle.net/b8xeo1zp/)
+#53 
+#55 (user issue)
+#61 (math related)
+#71 ( resolved )
+#72 ( already fixed )
+#73 ( need data to repro )
+#78 (resolved)
+#95 (same behavior with google charts)
+#100 (resolved)
+#106 (fix available)
