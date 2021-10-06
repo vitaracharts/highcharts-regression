@@ -188,8 +188,9 @@
                 sum[0] += data[n][0]; // X
                 sum[1] += data[n][1]; // Y
                 sum[2] += data[n][0] * data[n][0] * data[n][1]; // XXY
-                sum[3] += data[n][1] * Math.log(data[n][1]); // Y Log Y
-                sum[4] += data[n][0] * data[n][1] * Math.log(data[n][1]); //YY Log Y
+                //Temporary Solution for #13. If 0 or negative, add 0
+                sum[3] += data[n][1] <= 0 ? 0 : data[n][1] * Math.log(data[n][1]); // Y Log Y
+                sum[4] += data[n][1] <= 0 ? 0 : data[n][0] * data[n][1] * Math.log(data[n][1]); //YY Log Y
                 sum[5] += data[n][0] * data[n][1]; //XY
             }
         }
